@@ -194,27 +194,33 @@ const WeatherMenuButton = new Lang.Class({
 	this._currentWeather = new St.Bin({ style_class: 'current' });
 	// Future weather
 	this._futureWeather = new St.Bin({ style_class: 'forecast'});
+	
+	let item;
 
 	// Putting the popup item together
-	this.menu.addActor(this._currentWeather);
-
-	let item = new PopupMenu.PopupSeparatorMenuItem();
+	item = new PopupMenu.PopupBaseMenuItem();
+	item.actor.add_actor(this._currentWeather);
 	this.menu.addMenuItem(item);
 
-	this.menu.addActor(this._futureWeather);
+	item = new PopupMenu.PopupSeparatorMenuItem();
+	this.menu.addMenuItem(item);
 
-	let item = new PopupMenu.PopupSeparatorMenuItem();
+	item = new PopupMenu.PopupBaseMenuItem();
+	item.actor.add_actor(this._futureWeather);
+	this.menu.addMenuItem(item);
+
+	item = new PopupMenu.PopupSeparatorMenuItem();
 	this.menu.addMenuItem(item);
 
 	this._selectCity = new PopupMenu.PopupSubMenuMenuItem(_("Locations"));
 	this.menu.addMenuItem(this._selectCity);
 	this.rebuildSelectCityItem();
 
-	let item = new PopupMenu.PopupMenuItem(_("Reload Weather Information"));
+	item = new PopupMenu.PopupMenuItem(_("Reload Weather Information"));
 	item.connect('activate', Lang.bind(this, function(){this.refreshWeather(false);}));
 	this.menu.addMenuItem(item);
 
-	let item = new PopupMenu.PopupMenuItem(_("Weather Settings"));
+	item = new PopupMenu.PopupMenuItem(_("Weather Settings"));
 	item.connect('activate', Lang.bind(this, this._onPreferencesActivate));
 	this.menu.addMenuItem(item);
 
@@ -531,7 +537,7 @@ const WeatherMenuButton = new Lang.Class({
 		item = new PopupMenu.PopupMenuItem(this.extractLocation(cities[i]));
 		item.location = i;
 			if(i == this._actual_city)
-			item.setShowDot(true);
+			item.setOrnament(PopupMenu.Ornament.DOT);
 		this._selectCity.menu.addMenuItem(item);
 			item.connect('activate', function(actor,event)
 			{
@@ -1328,7 +1334,7 @@ const WeatherMenuButton = new Lang.Class({
 	    this._weatherInfo.text = weatherInfoC + ((weatherInfoC && weatherInfoT) ? ", " : "") + weatherInfoT + ((weatherInfoW && (weatherInfoC || weatherInfoT)) ? ", " : "") + weatherInfoW;
 
             // Refresh forecast
-            for (let i = 0; i <= 1; i++) {
+            for (let i = 0; i <= 2; i++) {
                 let forecastUi = this._forecast[i];
                 let forecastData = forecast[i];
 
@@ -1534,7 +1540,7 @@ const WeatherMenuButton = new Lang.Class({
         this._forecastBox = new St.BoxLayout();
         this._futureWeather.set_child(this._forecastBox);
 
-        for (let i = 0; i <= 1; i++) {
+        for (let i = 0; i <= 2; i++) {
             let forecastWeather = {};
 
             forecastWeather.Icon = new St.Icon({
